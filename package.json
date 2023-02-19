@@ -13,9 +13,6 @@
   "description": "Lottery Game Test",
   "version": "1.0.0",
   "main": "lottergame.js",
-  "directories": {
-    "test": "tests"
-  },
   "scripts": {
     "build": "webpack --config webpack.config.js --mode=production",
     "dev": "npm-run-all -p devjs local",
