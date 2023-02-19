@@ -1,4 +1,5 @@
 const path = require('path');
+const HTMLPlugin = require('html-webpack-plugin')
 
 module.exports = {
   entry: './src/index.js',
@@ -14,8 +15,15 @@ module.exports = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
+  plugins: [
+    new HTMLPlugin({
+      template: './index.html',
+      filename: 'index.html',
+      minify: false
+    })
+  ],
   output: {
     filename: 'lotterygame.js',
     path: path.resolve(__dirname, 'dist'),
   },
-};
+}
