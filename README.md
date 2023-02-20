@@ -10,3 +10,4 @@ npm run build
 2. Click start to draw the lottery balls
 3. See if you have won
 4. Game will reset itself after win animation
+5. Adder smaller wins to the paytable (1 wins 1, 2 wins 2) so wins are more likely to animate
