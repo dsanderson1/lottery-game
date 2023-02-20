@@ -3,7 +3,7 @@ import { Text } from "pixi.js"
 import { LotteryBallHandler } from "../Game/LotteryBallHandler"
 
 /**
- * UI Button abstrat class
+ * UI Button abstract class
  */
 export abstract class UIBtn extends Graphics{
     /** Text of the button */

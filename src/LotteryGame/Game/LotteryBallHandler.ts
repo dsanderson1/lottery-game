@@ -1,6 +1,6 @@
 import { Container } from "pixi.js";
-import { WinHandler } from "../UI/WinHandler";
-import { LotteryBall } from "./LotteryBall";
+import { WinHandler } from "./WinHandler";
+import { LotteryBall } from "./LotteryBall"
 export type matchAmounts = 0 | 1 | 2 | 3 | 4 | 5 | 6
 
 /**
@@ -18,7 +18,7 @@ export class LotteryBallHandler extends Container{
     public amountSelected: number = 0
 
     /** Where the game is currently in progress */
-    private inProgress: boolean = false
+    public inProgress: boolean = false
 
     /** Win handler */
     private winHandler: WinHandler
@@ -27,7 +27,7 @@ export class LotteryBallHandler extends Container{
         super()
         
         //Setup win handler
-        this.winHandler = new WinHandler(480, 250)
+        this.winHandler = new WinHandler(130, 700)
         this.addChild(this.winHandler)
 
         this.setupBalls();
@@ -38,20 +38,18 @@ export class LotteryBallHandler extends Container{
      */
     private setupBalls(){
         //Initial x and y positions
-        let x: number = 50
-        const startY: number = 100
-
+        let x: number = 0
+        
         //To count which row of lottery ball
         let rowCount: number = 0
 
         //Loop for how ever many lottery balls there are on config
         for (let i = 1; i <= this.config.amount; i++){
-            rowCount++
-            const y: number = startY + (rowCount * this.config.rowSpacing)
+            const y: number = rowCount * this.config.rowSpacing
             const ball: LotteryBall = new LotteryBall(this, x, y, i)
             this.addChild(ball)
             this.lotteryBalls.push(ball)
-
+            rowCount++
             //If the row count has been reached then add to the x positioning
             if (rowCount === this.config.ballsPerCol) {
                 rowCount = 0
@@ -89,18 +87,17 @@ export class LotteryBallHandler extends Container{
                 this.inProgress = true
 
                 //Get winning ball
-                this.randomBalls().forEach(rb => {
+                const winStagger: number = 0.8
+                this.randomBalls().forEach((rb, i) => {
                     rb.selected && winCount++
-                    promises.push(rb.checkWinAnim())
+                    promises.push(rb.checkWinAnim(i * winStagger))
                 })
                 //Wait to complate
                 await Promise.all(promises)
 
                 //Show win amount if any
-                this.winHandler.checkWin(winCount)
+                await this.winHandler.checkWin(winCount)
                 this.inProgress = false
-            //Reset balls if its post play
-            } else if (this.amountSelected > 6 || winCount > 5) {
                 this.resetBalls()
             }
         }

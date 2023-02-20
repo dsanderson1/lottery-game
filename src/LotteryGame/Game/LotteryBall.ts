@@ -18,6 +18,9 @@ export class LotteryBall extends Graphics {
     //Whether this particular ball is selected or not
     public selected: boolean = false
 
+    //Radius of the lottery ball
+    private radius: number = 25
+
     constructor(lotteryBallHandler: LotteryBallHandler, x: number, y: number, value: number) {
         super()
         this.lotteryBallHandler = lotteryBallHandler
@@ -42,10 +45,9 @@ export class LotteryBall extends Graphics {
      * @param y 
      */
     private setupGraphic(x: number, y: number){
-        const radius: number = 25
         this.beginFill(0xFFFFFF)
         this.lineStyle({color: 0x000000, width: 5, alignment: 1})
-        this.drawCircle(0, 0, radius).position.set(x, y)
+        this.drawCircle(0, 0, this.radius).position.set(x, y)
         this.endFill()
     }
 
@@ -62,30 +64,35 @@ export class LotteryBall extends Graphics {
      * Click logic for lottery ball
      */
     public click(){
-        //If not selected and not 6 selected then select this ball
-        if (!this.selected){
-            if (this.lotteryBallHandler.amountSelected < 6){
-                this.lotteryBallHandler.amountSelected++
-                this.selected = true
-                this.tint = 0xFFA500
+        //If not in progress
+        if (!this.lotteryBallHandler.inProgress){
+            //If not selected and not 6 selected then select this ball
+            if (!this.selected){
+                if (this.lotteryBallHandler.amountSelected < 6){
+                    this.lotteryBallHandler.amountSelected++
+                    this.selected = true
+                    this.tint = 0xFFA500
+                }
+            //Unselect the ball
+            }else{
+                this.lotteryBallHandler.amountSelected--
+                this.selected = false
+                this.tint = 0xFFFFFF
             }
-        //Unselect the ball
-        }else{
-            this.lotteryBallHandler.amountSelected--
-            this.selected = false
-            this.tint = 0xFFFFFF
         }
     }
 
     /**
      * Check if this ball if a winning match
      */
-    public async checkWinAnim(){
+    public async checkWinAnim(delay: number){
         //Change colour to green if winning match, or red otherwise
-        this.tint = this.selected ? 0x00FF00 : 0xFF0000
+        gsap.delayedCall(delay, ()=>this.tint = this.selected ? 0x00FF00 : 0xFF0000)
         //Tween the drawn ball
-        await gsap.to(this, {scaleXY: 1.2})
+        await gsap.to(this, {scaleXY: 1.3, delay: delay, rotation: this.radius/4})
+        this.rotation = 0
         await gsap.to(this, {scaleXY: 1})
+
         //Mark as selected
         if (!this.selected) {
             this.selected = true
